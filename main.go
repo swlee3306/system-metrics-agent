@@ -1,8 +1,8 @@
 package main
 
 import (
+	"system-Info-collector/cmd"
 	"system-Info-collector/pkg/logger"
-	"system-Info-collector/pkg/web"
 )
 
 var (
@@ -20,5 +20,5 @@ func main() {
 	logger.Info(fnc, "buildTag: %s", _buildTag)
 
 	//web server start
-	web.StartWebServer()
+	cmd.StartSystemAgent()
 }
