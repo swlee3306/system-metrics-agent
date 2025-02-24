@@ -18,7 +18,7 @@
 ## 설치 및 실행
 
 ### 1. **사전 요구 사항**
-
+- **빌드 운영체제**: mac (ARM 기반)
 - **운영 체제**: Ubuntu 20.04 또는 22.04
 - **언어 런타임**: Go 1.19 이상
 - **필수 권한**: 시스템 자원 접근을 위한 관리자 권한
@@ -29,4 +29,31 @@
    ```bash
    git clone https://github.com/<your-username>/system-Info-collector.git
    cd system-Info-collector
+   ```
+
+2. **빌드**
+   ```bash
+   cd script
+   ./build.sh (default: arm64)
+    -- 만약 x86 으로 빌드를 원하면
+      ㄴ GOARCH=amd64 ./build.sh 으로 실행
+
+   ./service-active.sh (바이너리 파일 배포후, 서비스 등록)
+   변경 해야 할 값
+   GOARCH=${GOARCH:-arm64}  # 기본값을 arm64로 설정 (환경 변수가 없을 경우)
+   SERVER_USER="{{설치할 서버 계정}}"       # 우분투 서버의 사용자 계정
+   SERVER_IP="{{설치할 서버 IP}}" # 우분투 서버의 IP 주소
+   SERVER_PORT="{{설치할 서버 Port}}"       # 우분투 서버의 SSH 포트
+   TARGET_DIR="/usr/local/bin"
+   SERVICE_NAME="system-agent"
+   SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
+
+   ./service-deactive.sh (서비스 삭제)
+   변경 해야 할 값
+   SERVER_USER="{{설치할 서버 계정}}"       # 우분투 서버의 사용자 계정
+   SERVER_IP="{{설치할 서버 IP}}" # 우분투 서버의 IP 주소
+   SERVER_PORT="{{설치할 서버 Port}}"       # 우분투 서버의 SSH 포트
+   TARGET_DIR="/usr/local/bin"
+   SERVICE_NAME="system-agent"
+   SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"   
    ```
