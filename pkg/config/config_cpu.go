@@ -3,7 +3,9 @@ package config
 type CPUInfo struct {
 	Processor string `json:"processor"`
 	ModelName string `json:"model_name"`
-	Cores     string `json:"cores"`
-	CPU_MHz   string `json:"cpu_mhz"`
-	CacheSize string `json:"cache_size"`
+	Cpus string `json:"cpus"`
+	Vendor_ID   string `json:"Vendor ID"`
+	Threads_per_core string `json:"threads_per_core"`
+	Cores_per_socket string `json:"cores_per_socket"`
+	Socket string `json:"socket"`
 }
