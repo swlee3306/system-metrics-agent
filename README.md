@@ -57,3 +57,6 @@
    SERVICE_NAME="system-agent"
    SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"   
    ```
+
+3. **실행 후 API**
+   - **http://{{server ip}}:8080/api/v1.0/cpuinfo**
