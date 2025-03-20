@@ -2,6 +2,7 @@ package web
 
 import (
 	"system-Info-collector/internal/collector/cpu"
+	"system-Info-collector/internal/collector/memory"
 	"system-Info-collector/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,17 @@ func StartWebServer() {
 				return
 			}
 			c.JSON(200, cpuInfos)
+		})
+
+		//memory 정보를 가져와서 응답주는 API
+		apiGroup.GET("/memoryinfo", func(c *gin.Context) {
+			memoryInfos, err := memory.GetMemoryInfo()
+			if err != nil {
+				logger.Error("fnc", "Error getting CPU info: %v", err)
+				c.JSON(500, gin.H{"error": "Failed to get CPU info"})
+				return
+			}
+			c.JSON(200, memoryInfos)
 		})
 
 		err := r.Run(":8080")
