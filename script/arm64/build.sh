@@ -25,6 +25,6 @@ go build -ldflags "\
     -X 'main._buildRevisionShort=${BUILD_REVISION_SHORT}' \
     -X 'main._buildBranch=${BUILD_BRANCH}' \
     -X 'main._buildTag=${BUILD_TAG}'" \
-    -o system-agent-linux-$GOARCH ../main.go
+    -o system-agent-linux-$GOARCH ../../main.go
 
 echo "✅ 빌드 완료: system-agent-linux-arm64"
