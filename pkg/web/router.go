@@ -2,6 +2,7 @@ package web
 
 import (
 	"system-Info-collector/internal/collector/cpu"
+	"system-Info-collector/internal/collector/disk"
 	"system-Info-collector/internal/collector/memory"
 	"system-Info-collector/pkg/logger"
 
@@ -34,10 +35,22 @@ func StartWebServer() {
 			memoryInfos, err := memory.GetMemoryInfo()
 			if err != nil {
 				logger.Error("fnc", "Error getting CPU info: %v", err)
-				c.JSON(500, gin.H{"error": "Failed to get CPU info"})
+				c.JSON(500, gin.H{"error": "Failed to get memory info"})
 				return
 			}
 			c.JSON(200, memoryInfos)
+		})
+
+		//Disk 정보를 가져와서 응답주는 API
+
+		apiGroup.GET("/diskinfo", func(c *gin.Context) {
+			diskInfos, err := disk.GetDiskInfo()
+			if err != nil {
+				logger.Error("fnc", "Error getting CPU info: %v", err)
+				c.JSON(500, gin.H{"error": "Failed to get disk info"})
+				return
+			}
+			c.JSON(200, diskInfos)
 		})
 
 		err := r.Run(":8080")
