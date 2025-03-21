@@ -4,6 +4,7 @@ import (
 	"system-Info-collector/internal/collector/cpu"
 	"system-Info-collector/internal/collector/disk"
 	"system-Info-collector/internal/collector/memory"
+	"system-Info-collector/internal/collector/network"
 	"system-Info-collector/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func StartWebServer() {
 		apiGroup.GET("/memoryinfo", func(c *gin.Context) {
 			memoryInfos, err := memory.GetMemoryInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting CPU info: %v", err)
+				logger.Error("fnc", "Error getting memory info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get memory info"})
 				return
 			}
@@ -46,11 +47,23 @@ func StartWebServer() {
 		apiGroup.GET("/diskinfo", func(c *gin.Context) {
 			diskInfos, err := disk.GetDiskInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting CPU info: %v", err)
+				logger.Error("fnc", "Error getting disk info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get disk info"})
 				return
 			}
 			c.JSON(200, diskInfos)
+		})
+
+		//Network Interface 정보를 가져와서 응답주는 API
+
+		apiGroup.GET("/networkinfo", func(c *gin.Context) {
+			networkInfos, err := network.GetNetworkInfo()
+			if err != nil {
+				logger.Error("fnc", "Error getting network info: %v", err)
+				c.JSON(500, gin.H{"error": "Failed to get network info"})
+				return
+			}
+			c.JSON(200, networkInfos)
 		})
 
 		err := r.Run(":8080")
