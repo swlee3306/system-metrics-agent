@@ -26,3 +26,9 @@ go.work.sum
 
 #vscode
 .vscode/
+
+#ssh-key
+script/ssh-key/*
+
+#server-list
+script/server-list/*
