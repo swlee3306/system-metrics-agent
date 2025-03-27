@@ -3,7 +3,9 @@ package memory
 import (
 	"bufio"
 	"bytes"
+	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"system-Info-collector/pkg/config"
 )
@@ -66,4 +68,50 @@ func GetMemoryInfo() ([]*config.MEMInfo, error) {
 	// mem 객체를 리스트에 추가
 	mems = append(mems, mem)
 	return mems, nil
+}
+
+// GetMemoryUsage retrieves memory usage statistics from /proc/meminfo
+func GetMemoryUsage() (*config.MemoryUsage, error) {
+	file, err := os.Open("/proc/meminfo")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var total, available float64
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		fields := strings.Fields(scanner.Text())
+		if len(fields) < 2 {
+			continue
+		}
+
+		key := fields[0][:len(fields[0])-1] // Remove trailing ':'
+		value, err := strconv.ParseFloat(fields[1], 64)
+		if err != nil {
+			return nil, err
+		}
+
+		switch key {
+		case "MemTotal":
+			total = value
+		case "MemAvailable":
+			available = value
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	used := total - available
+	usage := (used / total) * 100
+
+	return &config.MemoryUsage{
+		Total:     total,
+		Used:      used,
+		Available: available,
+		Usage:     usage,
+	}, nil
 }

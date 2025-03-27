@@ -10,3 +10,10 @@ type DiskInfo struct {
 		MountedOn  string `json:"mounted_on"`
 	} `json:"Filesystems"`
 }
+
+type DiskUsage struct {
+	Total float64
+	Used  float64
+	Free  float64
+	Usage float64
+}

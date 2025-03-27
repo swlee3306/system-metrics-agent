@@ -3,9 +3,13 @@ package cpu
 import (
 	"bufio"
 	"bytes"
+	"fmt"
+	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"system-Info-collector/pkg/config"
+	"time"
 )
 
 // GetCpuInfo retrieves CPU information using the `lscpu` command
@@ -63,4 +67,64 @@ func GetCpuInfo() ([]*config.CPUInfo, error) {
 	cpus = append(cpus, &cpu)
 
 	return cpus, nil
+}
+
+// getCpuTimes reads the CPU times from /proc/stat
+func getCpuTimes() (idle, total float64, err error) {
+	file, err := os.Open("/proc/stat")
+	if err != nil {
+		return 0, 0, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	if scanner.Scan() {
+		fields := strings.Fields(scanner.Text())
+		if len(fields) < 8 {
+			return 0, 0, fmt.Errorf("unexpected format in /proc/stat")
+		}
+
+		var values []float64
+		for _, field := range fields[1:8] { // 첫 번째 필드는 "cpu" 라벨이므로 제외
+			v, err := strconv.ParseFloat(field, 64)
+			if err != nil {
+				return 0, 0, err
+			}
+			values = append(values, v)
+		}
+
+		idle = values[3] // idle time
+		total = 0
+		for _, v := range values {
+			total += v
+		}
+	}
+
+	return idle, total, scanner.Err()
+}
+
+// GetCpuUsage calculates CPU usage by sampling over a short time period
+func GetCpuUsage(interval time.Duration) (*config.CpuUsage, error) {
+	idle1, total1, err := getCpuTimes()
+	if err != nil {
+		return nil, err
+	}
+
+	time.Sleep(interval)
+
+	idle2, total2, err := getCpuTimes()
+	if err != nil {
+		return nil, err
+	}
+
+	idleDelta := idle2 - idle1
+	totalDelta := total2 - total1
+	usage := &config.CpuUsage{}
+
+	if totalDelta > 0 {
+		usage.Idle = (idleDelta / totalDelta) * 100
+		usage.Total = 100 - usage.Idle
+	}
+
+	return usage, nil
 }

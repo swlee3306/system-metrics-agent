@@ -1,74 +1,83 @@
 package web
 
 import (
+	"fmt"
+	"net/http"
 	"system-Info-collector/internal/collector/cpu"
 	"system-Info-collector/internal/collector/disk"
+	"system-Info-collector/internal/collector/exporter"
 	"system-Info-collector/internal/collector/memory"
 	"system-Info-collector/internal/collector/network"
-	"system-Info-collector/pkg/logger"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/gin-gonic/gin"
 )
 
 func StartWebServer() {
 	fnc := "StartWebServer"
-	logger.Info("fnc", "Starting web server[%s]", fnc)
+	fmt.Println("Starting web server:", fnc)
+
+	prometheus.MustRegister(exporter.CPUUsageGauge)
+	prometheus.MustRegister(exporter.MemoryUsageGauge)
+	prometheus.MustRegister(exporter.DiskUsageGauge)
+
+	// Add /metrics and /health handlers to the default HTTP server
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"status":"ok"}`))
+		})
+		if err := http.ListenAndServe(":9091", nil); err != nil {
+			fmt.Printf("Metric server error: %v\n", err)
+		}
+	}()
 
 	r := gin.Default()
-
 	r.Use(gin.Recovery())
 
 	apiGroup := r.Group("/api/v1.0")
 	{
-		//cpu 정보를 가져와서 응답주는 API
 		apiGroup.GET("/cpuinfo", func(c *gin.Context) {
 			cpuInfos, err := cpu.GetCpuInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting CPU info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get CPU info"})
 				return
 			}
 			c.JSON(200, cpuInfos)
 		})
 
-		//memory 정보를 가져와서 응답주는 API
 		apiGroup.GET("/memoryinfo", func(c *gin.Context) {
 			memoryInfos, err := memory.GetMemoryInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting memory info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get memory info"})
 				return
 			}
 			c.JSON(200, memoryInfos)
 		})
 
-		//Disk 정보를 가져와서 응답주는 API
-
 		apiGroup.GET("/diskinfo", func(c *gin.Context) {
 			diskInfos, err := disk.GetDiskInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting disk info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get disk info"})
 				return
 			}
 			c.JSON(200, diskInfos)
 		})
 
-		//Network Interface 정보를 가져와서 응답주는 API
-
 		apiGroup.GET("/networkinfo", func(c *gin.Context) {
 			networkInfos, err := network.GetNetworkInfo()
 			if err != nil {
-				logger.Error("fnc", "Error getting network info: %v", err)
 				c.JSON(500, gin.H{"error": "Failed to get network info"})
 				return
 			}
 			c.JSON(200, networkInfos)
 		})
-
-		err := r.Run(":8080")
-		if err != nil {
-			logger.Error(fnc, "%s error: %v", fnc, err)
-		}
+	}
+	if err := r.Run(":8080"); err != nil {
+		fmt.Printf("Web server error: %v\n", err)
 	}
 }
