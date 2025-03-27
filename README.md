@@ -37,6 +37,11 @@
 - **REST API 제공**: 수집한 데이터를 RESTful API를 통해 제공.
 - **SSH key 등록 스크립트 제공**: 접속할 서버의 SSH public key data 등록하는 기능 제공.
 
+### 6. 메트릭 및 헬스체크 제공
+
+- **/metrics**: Prometheus 포맷으로 CPU, 메모리, 디스크 사용률을 제공.
+- **/health**: 시스템 상태를 확인할 수 있는 간단한 헬스체크 엔드포인트 제공 (결과: {"status":"ok"}).
+
 ---
 
 ## 설치 및 실행
@@ -87,3 +92,5 @@
 
 3. **실행 후 API**
    - **http://{{server ip}}:8080/api/v1.0/cpuinfo**
+   - **http://{{server ip}}:9090/metrics**
+   - **http://{{server ip}}:9090/health**

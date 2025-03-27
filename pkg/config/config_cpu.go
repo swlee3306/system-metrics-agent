@@ -9,3 +9,11 @@ type CPUInfo struct {
 	Cores_per_socket string `json:"cores_per_socket"`
 	Socket string `json:"socket"`
 }
+
+// CpuUsage represents CPU usage statistics
+type CpuUsage struct {
+	User   float64
+	System float64
+	Idle   float64
+	Total  float64
+}

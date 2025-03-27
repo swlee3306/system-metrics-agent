@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os/exec"
 	"strings"
+	"syscall"
 	"system-Info-collector/pkg/config"
 )
 
@@ -49,4 +50,26 @@ func GetDiskInfo() ([]*config.DiskInfo, error) {
 	}
 
 	return disks, nil
+}
+
+// GetDiskUsage retrieves disk usage statistics
+func GetDiskUsage(path string) (*config.DiskUsage, error) {
+	var stat syscall.Statfs_t
+
+	err := syscall.Statfs(path, &stat)
+	if err != nil {
+		return nil, err
+	}
+
+	total := float64(stat.Blocks * uint64(stat.Bsize))
+	free := float64(stat.Bfree * uint64(stat.Bsize))
+	used := total - free
+	usage := (used / total) * 100
+
+	return &config.DiskUsage{
+		Total: total,
+		Used:  used,
+		Free:  free,
+		Usage: usage,
+	}, nil
 }
