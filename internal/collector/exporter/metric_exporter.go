@@ -91,10 +91,16 @@ func MetricExporter(interval time.Duration) {
 		if err != nil {
 			log.Println("Error collecting Disk info:", err)
 		}
-		diskUsage, err := disk.GetDiskUsage("/")
-		if err == nil && diskInfo != nil && diskUsage != nil {
-			for _, disk := range diskInfo {
-				for _, fs := range disk.Filesystems {
+		if err == nil && diskInfo != nil {
+			for _, d := range diskInfo {
+				for _, fs := range d.Filesystems {
+					diskUsage, err := disk.GetDiskUsage(fs.MountedOn)
+
+					if err != nil {
+						fmt.Printf("Disk Usage Collected: %.2f%%\n", diskUsage.Usage)
+						continue
+					}
+
 					DiskUsageGauge.WithLabelValues(
 						fs.Filesystem,
 						fs.Size,
@@ -105,7 +111,6 @@ func MetricExporter(interval time.Duration) {
 					).Set(diskUsage.Usage)
 				}
 			}
-			fmt.Printf("Disk Usage Collected: %.2f%%\n", diskUsage.Usage)
 		} else {
 			log.Println("Error collecting Disk usage:", err)
 		}
