@@ -40,7 +40,7 @@
 
 ### 1. 저장소 클론
 ```bash
-git clone https://github.com/yourusername/system-Info-collector.git
+git clone https://github.com/swlee3306/system-Info-collector.git
 cd system-Info-collector
 ```
 
@@ -508,9 +508,9 @@ LOG_FORMAT=json
 
 ## 📞 지원 및 문의
 
-- 이슈 리포트: [GitHub Issues](https://github.com/yourusername/system-Info-collector/issues)
-- 이메일: your.email@example.com
-- 문서: [Wiki](https://github.com/yourusername/system-Info-collector/wiki)
+- 이슈 리포트: [GitHub Issues](https://github.com/swlee3306/system-Info-collector/issues)
+- 이메일: swlee3306@gmail.com
+- 문서: [Wiki](https://github.com/swlee3306/system-Info-collector/wiki)
 
 ---
 
