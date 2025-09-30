@@ -36,6 +36,13 @@
 - **성능 최적화**: 효율적인 데이터 수집 및 처리
 - **리소스 모니터링**: 에이전트 자체 성능 모니터링
 
+### 🛠️ 개발 및 배포
+- **크로스 플랫폼 빌드**: ARM64, AMD64 지원
+- **자동화된 배포**: 스크립트 기반 서비스 관리
+- **SSH 키 관리**: 원격 서버 자동 설정
+- **서비스 관리**: systemd 기반 서비스 제어
+- **데이터베이스 모델**: 자동 생성된 GORM 모델
+
 ## 📦 설치 및 실행
 
 ### 1. 저장소 클론
@@ -80,18 +87,65 @@ go build -o system-collector main.go
 ./system-collector
 ```
 
+### 5. 크로스 플랫폼 빌드
+```bash
+# ARM64 빌드 (Linux)
+cd script/arm64
+GOARCH=arm64 ./build.sh
+
+# AMD64 빌드 (Linux)
+cd script/arm64
+GOARCH=amd64 ./build.sh
+
+# 빌드된 바이너리 실행
+./system-agent-linux-arm64
+```
+
+### 6. 서비스 관리
+```bash
+# 서비스 활성화
+./service-active.sh
+
+# 서비스 비활성화
+./service-deactive.sh
+
+# SSH 키 설정 (원격 서버용)
+./ssh-key-setup.sh
+```
+
 ## 🏗️ 프로젝트 구조
 
 ```
 system-Info-collector/
 ├── main.go                 # 메인 실행 파일
-├── config/                 # 설정 관리
-│   └── config.go          # 설정 로드 및 관리
-├── collectors/            # 데이터 수집기
-│   ├── cpu.go            # CPU 정보 수집
-│   ├── memory.go         # 메모리 정보 수집
-│   ├── disk.go           # 디스크 정보 수집
-│   └── network.go        # 네트워크 정보 수집
+├── cmd/                    # 서버 시작 로직
+│   └── server.go          # 시스템 에이전트 시작
+├── internal/               # 내부 패키지
+│   └── collector/         # 데이터 수집기
+│       ├── cpu/           # CPU 정보 수집
+│       │   └── cpu.go
+│       ├── memory/        # 메모리 정보 수집
+│       │   └── memory.go
+│       ├── disk/          # 디스크 정보 수집
+│       │   └── disk.go
+│       ├── network/       # 네트워크 정보 수집
+│       │   └── network.go
+│       └── exporter/      # 메트릭 익스포터
+│           └── metric_exporter.go
+├── pkg/                    # 공통 패키지
+│   ├── config/           # 설정 관리
+│   │   ├── config_cpu.go
+│   │   ├── config_disk.go
+│   │   ├── config_memory.go
+│   │   └── config_network.go
+│   ├── db/               # 데이터베이스 모델
+│   │   └── model/        # 생성된 모델 파일들
+│   ├── logger/           # 로깅 시스템
+│   │   └── logger.go
+│   ├── prometheus/       # Prometheus 메트릭
+│   │   └── prometheus.go
+│   └── web/              # 웹 서버
+│       └── router.go
 ├── storage/               # 데이터 저장
 │   └── timeseries.go      # 시계열 데이터베이스 연동
 ├── alerting/              # 알림 시스템
@@ -101,12 +155,13 @@ system-Info-collector/
 ├── grafana/               # Grafana 연동
 │   ├── dashboard.json     # 대시보드 설정
 │   └── datasource.yaml    # 데이터소스 설정
-├── api/                   # REST API
-│   ├── handlers.go        # API 핸들러
-│   └── routes.go          # 라우트 설정
-├── metrics/               # Prometheus 메트릭
-│   └── metrics.go         # 메트릭 수집 및 노출
-├── .env.example           # 환경 변수 예제
+├── script/                # 빌드 및 배포 스크립트
+│   └── arm64/            # ARM64 빌드 스크립트
+│       ├── build.sh
+│       ├── service-active.sh
+│       ├── service-deactive.sh
+│       ├── ssh-key-setup.sh
+│       └── system-agent-linux-arm64
 ├── go.mod                # Go 모듈 파일
 ├── go.sum                # 의존성 체크섬
 └── README.md             # 프로젝트 문서
