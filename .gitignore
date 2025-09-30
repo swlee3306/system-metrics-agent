@@ -21,16 +21,28 @@
 go.work
 go.work.sum
 
-# env file
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-#vscode
+# Editor directories and files
 .vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-#ssh-key
+# OS specific
+.DS_Store
+Thumbs.db
+
+# SSH keys and server lists
 script/ssh-key/*
-
-#server-list
 script/server-list/*
 
 # Logs
@@ -40,20 +52,49 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dev-debug.log
+
 # Dependency directories
 node_modules/
-# Environment variables
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
-.DS_Store
 
-# Task files
-# tasks.json
-# tasks/ 
+# Build directories
+build/
+dist/
+bin/
+
+# IDE and editor files
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Configuration files (keep examples)
+config.yaml
+config.json
+settings.yaml
+settings.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage reports
+coverage.out
+coverage.html
+
+# Profiling files
+*.prof
+*.pprof
+
+# Taskmaster files (development only)
+.taskmaster/
+.cursor/
+
+# Local development files
+local/
+dev/
