@@ -46,14 +46,16 @@ func GetNetworkInfo() ([]*config.NetworkInterfaceInfo, error) {
 
 		# 인터페이스별 MAC 주소 출력
 		for iface in "${interfaces[@]}"; do
+		    ipaddr=$(ip -4 -o addr show dev $iface | awk '{print $4}' | cut -d'/' -f1)
+		    ipaddr=${ipaddr:-""}
 		    if [[ -n "${bond_interfaces[$iface]}" ]]; then
 		        bond_name=${bond_interfaces[$iface]}
-		        echo "$iface|${bonded_macs[$iface]}|$bond_name|${bond_mac_addrs[$bond_name]}"
+		        echo "$iface|${bonded_macs[$iface]}|$bond_name|${bond_mac_addrs[$bond_name]}|$ipaddr"
 		    elif [[ -n "${bond_mac_addrs[$iface]}" ]]; then
-		        echo "$iface|${bond_mac_addrs[$iface]}|$iface|${bond_mac_addrs[$iface]}"
+		        echo "$iface|${bond_mac_addrs[$iface]}|$iface|${bond_mac_addrs[$iface]}|$ipaddr"
 		    else
 		        mac=$(cat /sys/class/net/$iface/address 2>/dev/null)
-		        echo "$iface|${mac}| | "
+		        echo "$iface|${mac}| | |$ipaddr"
 		    fi
 		done
 	`
@@ -83,12 +85,14 @@ func GetNetworkInfo() ([]*config.NetworkInterfaceInfo, error) {
 		networkInterface := &config.NetworkInterfaceInfo{
 			Interfaces: []struct {
 				Name         string `json:"name"`          // 인터페이스 이름
+				IpAddress    string `json:"ip_address"`    // IP 주소
 				MacAddress   string `json:"mac_address"`   // MAC 주소
 				BondingGroup string `json:"bonding_group"` // 본딩 그룹명 (없으면 빈 문자열)
 				BondingMac   string `json:"bonding_mac"`   // 본딩 MAC 주소 (없으면 빈 문자열)
 			}{
 				{
 					Name:         strings.TrimSpace(fields[0]),
+					IpAddress:    strings.TrimSpace(fields[4]),
 					MacAddress:   strings.TrimSpace(fields[1]),
 					BondingGroup: strings.TrimSpace(fields[2]),
 					BondingMac:   strings.TrimSpace(fields[3]),
