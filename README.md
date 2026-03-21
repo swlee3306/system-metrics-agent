@@ -1,4 +1,4 @@
-# System-Info-Collector
+# system-metrics-agent
 
 ## 한 줄 소개
 시스템 메트릭을 수집해 API 형태로 제공하는 경량 에이전트입니다.
@@ -55,8 +55,8 @@
 
 ### 1. 저장소 클론
 ```bash
-git clone https://github.com/swlee3306/system-Info-collector.git
-cd system-Info-collector
+git clone https://github.com/swlee3306/system-metrics-agent.git
+cd system-metrics-agent
 ```
 
 ### 2. 의존성 설치
@@ -124,7 +124,7 @@ GOARCH=amd64 ./build.sh
 ## 🏗️ 프로젝트 구조
 
 ```
-system-Info-collector/
+system-metrics-agent/
 ├── main.go                 # 메인 실행 파일
 ├── cmd/                    # 서버 시작 로직
 │   └── server.go          # 시스템 에이전트 시작
@@ -571,9 +571,9 @@ LOG_FORMAT=json
 
 ## 📞 지원 및 문의
 
-- 이슈 리포트: [GitHub Issues](https://github.com/swlee3306/system-Info-collector/issues)
+- 이슈 리포트: [GitHub Issues](https://github.com/swlee3306/system-metrics-agent/issues)
 - 이메일: swlee3306@gmail.com
-- 문서: [Wiki](https://github.com/swlee3306/system-Info-collector/wiki)
+- 문서: [Wiki](https://github.com/swlee3306/system-metrics-agent/wiki)
 
 ---
 
