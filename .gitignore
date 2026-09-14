@@ -101,3 +101,6 @@ dev/
 
 # Build locally from reviewed source; do not publish legacy executables.
 /script/arm64/system-agent-linux-*
+
+# Local Python regression-test cache.
+__pycache__/
