@@ -98,3 +98,6 @@ coverage.html
 # Local development files
 local/
 dev/
+
+# Build locally from reviewed source; do not publish legacy executables.
+/script/arm64/system-agent-linux-*
