@@ -22,7 +22,7 @@ go build -mod=readonly ./...
 ## 공개 자료의 경계
 
 Grafana 설정은 [공개 예시·운영 설정 구분 안내](grafana/README.md)를 먼저 확인하세요.
-`grafana/datasource.yaml`의 비밀번호는 명시적인 placeholder로 교체했습니다. 실제 비밀값은 별도 비공개 설정에서 관리해야 하며, Grafana 연동은 미검증입니다. ARM64 배포 스크립트도 서버 주소·SSH 키 경로를 명시적으로 입력해야 실행됩니다.
+`grafana/datasource.yaml`은 `secureJsonData` 아래 명시적인 placeholder를 사용하는 구조 예시입니다. 실제 비밀값은 별도 비공개 설정에서 관리해야 합니다. 격리 Grafana 13.2.1에서 설정 등록과 비밀 필드 처리를 검증했으며 실제 데이터소스 연동은 미검증입니다. ARM64 배포 스크립트도 서버 주소·SSH 키 경로를 명시적으로 입력해야 실행됩니다.
 
 현재 소스에서 레거시 생성 DB 모델과 로거의 DB 의존성을 제거했습니다. 로그는 Go 표준 로거(기본 stderr)로 즉시 출력하며, 호출 위치에는 파일명만 포함합니다. 메시지 자체의 비밀값은 자동으로 정제하지 않습니다.
 

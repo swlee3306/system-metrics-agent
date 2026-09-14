@@ -18,7 +18,8 @@ datasources:
     url: http://localhost:8086
     database: system_metrics
     user: admin
-    password: "REPLACE_WITH_INFLUXDB_PASSWORD"
+    secureJsonData:
+      password: "REPLACE_WITH_INFLUXDB_PASSWORD"
     jsonData:
       timeInterval: "5s"
       httpMode: "POST"
@@ -29,7 +30,8 @@ datasources:
     url: localhost:5432
     database: system_metrics
     user: postgres
-    password: "REPLACE_WITH_TIMESCALEDB_PASSWORD"
+    secureJsonData:
+      password: "REPLACE_WITH_TIMESCALEDB_PASSWORD"
     jsonData:
       sslmode: "disable"
       timescaledb: true

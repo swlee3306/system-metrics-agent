@@ -1,5 +1,32 @@
 # Grafana configuration boundary
 
+## Latest verification — supersedes the historical review below
+
+On 2026-09-14 the public example was tested in a disposable Grafana 13.2.1
+container with `--network none`, no published ports or host-directory mounts,
+and a synthetic administrator password. No operating service was contacted.
+Legacy top-level `password` properties did not register secure password fields.
+They now use `secureJsonData`, with a regression test. The values remain explicit
+non-working placeholders. No real datasource query or authentication is claimed.
+
+After reprovisioning, `/api/health` reported database `ok`; all three datasources
+were registered, and individual InfluxDB/TimescaleDB API responses showed
+`secureJsonFields.password: true` without returning the placeholder values.
+Image digest: `sha256:f772d434e8fab0049deb2b1b30abd43342bcfca1537614aa8d36080232cf4283`.
+The network-blocked plugin-pattern update warning is expected in this test.
+
+Inside a container, localhost means that container, not the host or another
+datasource container. Use a separate private configuration for your actual
+addresses, authentication and TLS. Never commit operational credentials.
+
+Known fixed passwords and generated DB models were removed from published
+main/dev histories on 2026-09-14. Read-only GitHub PR refs, caches and external
+copies remain a separate scope. No operating password was rotated or tested.
+
+Official format: https://grafana.com/docs/grafana/latest/administration/provisioning/
+
+## Historical notes — describe the state before the changes above
+
 ## Public configuration update — 2026-09-14
 
 Both password fields in `datasource.yaml` now contain explicit `REPLACE_WITH_...`

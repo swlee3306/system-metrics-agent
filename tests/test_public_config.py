@@ -23,5 +23,13 @@ class PublicConfigTests(unittest.TestCase):
         self.assertEqual(len(lines), 2)
         self.assertTrue(all('REPLACE_WITH_' in line for line in lines))
 
+    def test_passwords_use_secure_json_data(self):
+        lines = (ROOT / 'grafana/datasource.yaml').read_text().splitlines()
+        passwords = [i for i, line in enumerate(lines) if line.strip().startswith('password:')]
+        self.assertEqual(len(passwords), 2)
+        for i in passwords:
+            self.assertEqual(lines[i - 1], '    secureJsonData:')
+            self.assertTrue(lines[i].startswith('      password:'))
+
 if __name__ == '__main__':
     unittest.main()
