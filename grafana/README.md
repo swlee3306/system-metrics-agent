@@ -1,5 +1,18 @@
 # Grafana configuration boundary
 
+## Public configuration update — 2026-09-14
+
+Both password fields in `datasource.yaml` now contain explicit `REPLACE_WITH_...`
+placeholders. They are not working credentials and are not automatically expanded.
+Use a private configuration and an appropriate secret mechanism before provisioning.
+The ARM64 activation/deactivation scripts no longer contain a default server IP or
+personal SSH key path: arguments 2 and 4 must be supplied. Do not run the destructive
+deactivation script as a smoke test. Verification only exercised its missing-argument
+failure path, before any SSH command.
+
+No operating Grafana or remote service was changed. Historical literals may still
+exist in Git history. The notes below describe the pre-cleanup configuration.
+
 Reviewed on 2026-09-14. The existing `datasource.yaml` contains Prometheus,
 InfluxDB and TimescaleDB definitions, including password literals. Their validity
 and any external provisioning/mount usage are unknown. No Grafana service was
